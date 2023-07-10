@@ -15,8 +15,10 @@ Servo myservo;  // create servo object to control a servo
 
 int pos = 0;    // variable to store the servo position
 int servoPin = 2;
-const char* ssid = "WLAN-990454"; //Enter the router name
-const char* password = "5159341473380940"; //Enter the router password
+const char* ssid = "unagi & salmon skin roll"; //Enter the router name
+const char* password = "201301wxl"; //Enter the router password
+//const char* ssid = "WLAN-990454"; //Enter the router name
+//const char* password = "5159341473380940"; //Enter the router password
 //const char* ssid = "KabelBox-5720";
 //const char* password = "93862697736661691359";
 const char* sheetId = "1MvLMi6_GJr42eQFieYQUfyNza_aeABIqt7L_H2IDDFg";
@@ -24,7 +26,7 @@ const char* sheetName = "Sheet1!A1:A1";
 
 const char* apiEndpoint = "https://sheets.googleapis.com/v4/spreadsheets";
 const char* apiKey = "AIzaSyDe8mU5g5d0lWDFJTz4QHZsV88yT_4jWmk";
-String previous_state = "off";
+String lastValue = "off";
 void setup() {
   Serial.begin(115200);
   WiFi.begin(ssid, password);
@@ -68,11 +70,10 @@ void loop() {
 
         for (JsonVariant row : rows) {
           String value = row[0].as<String>();
-          String current_value = value;
           Serial.println(value);
-          if(previous_state != current_value){
+          if((value == "off" || value == "on")&&(value != lastValue)){
             swith();
-            previous_state = current_value;
+            lastValue = value;
           }
         }
       }
