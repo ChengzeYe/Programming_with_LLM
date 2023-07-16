@@ -9,6 +9,7 @@
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
 #include <ESP32Servo.h>
+#include <stdlib.h>
 
 Servo myservo;  // create servo object to control a servo
 // 16 servo objects can be created on the ESP32
@@ -22,7 +23,7 @@ const char* password = "201301wxl"; //Enter the router password
 //const char* ssid = "KabelBox-5720";
 //const char* password = "93862697736661691359";
 const char* sheetId = "1MvLMi6_GJr42eQFieYQUfyNza_aeABIqt7L_H2IDDFg";
-const char* sheetName = "Sheet1!A1:A1";
+const char* sheetName = "Sheet1!A1:B1";
 
 const char* apiEndpoint = "https://sheets.googleapis.com/v4/spreadsheets";
 const char* apiKey = "AIzaSyDe8mU5g5d0lWDFJTz4QHZsV88yT_4jWmk";
@@ -70,9 +71,11 @@ void loop() {
 
         for (JsonVariant row : rows) {
           String value = row[0].as<String>();
+          String time = row[1].as<String>();
           Serial.println(value);
+          //Serial.println("time"+time);
           if((value == "off" || value == "on")&&(value != lastValue)){
-            swith();
+            swith(time);
             lastValue = value;
           }
         }
@@ -84,14 +87,15 @@ void loop() {
     http.end();
   }
 
-  delay(3000);
+  delay(2000);
 }
-void swith(){
+void swith(String time){
   	for (pos = 0; pos <= 90; pos += 1) { // goes from 0 degrees to 180 degrees
 		// in steps of 1 degree
 		myservo.write(pos);    // tell servo to go to position in variable 'pos'
 		delay(15);             // waits 15ms for the servo to reach the position
 	}
+  delay(atoi(time.c_str())*1000);
 	for (pos = 90; pos >= 0; pos -= 1) { // goes from 180 degrees to 0 degrees
 		myservo.write(pos);    // tell servo to go to position in variable 'pos'
 		delay(15);             // waits 15ms for the servo to reach the position
